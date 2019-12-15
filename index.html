@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta property="og:image" content="https://cdn.pixabay.com/photo/2016/09/21/11/31/youtube-1684601_960_720.png">
+  <title>YouTube Grabber | Free Online YouTube Video Converter | MP4 MP3</title>
+  <meta name="description" content="YouTube Grabber is a high quality snappy video converter, just paste in your url from YouTube and download your favourite videos in your prefered file format. Formats available: MP4 MP3">
+  <link rel="shortcut icon" href="https://cdn.pixabay.com/photo/2017/04/20/07/08/upload-2244780_960_720.png">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Orbitron&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style type="text/css">
+  html {
+    height: 100%;
+  }
+
+  body {
+    min-height: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #ffffff;
+    background: url('https://cdn.discordapp.com/attachments/609854271810306049/655442444216696843/bg.svg');
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+  }
+
+  .card {
+    box-shadow: 20px 20px 35px 0px rgba(0,0,0,0.82);
+    transition-duration: 0.4s;
+    animation: slide-up 0.6s ease;
+  }
+
+  @keyframes slide-up {
+    0% {
+      opacity: 0;
+      transform: translateX(-1000px);
+    } 100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .card:hover {
+    box-shadow: 15px 15px 17px 0px rgba(0,0,0,0.82);
+    transform: translateY(5px);
+  }
+
+  .card, .card img, .btn-dl {
+    border-radius: 30px !important;
+  }
+
+  .input-group {
+    box-shadow: 10px 10px 35px 0px rgba(0,0,0,0.82);
+    border-radius: 30px !important;
+  }
+
+  h2 {
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .modal-content {
+    border-radius: 30px !important;
+  }
+
+  #urlInput {
+    border-bottom-left-radius: 30px;
+    border-top-left-radius: 30px;
+    border: none;
+  }
+
+  #btn-convert {
+    border-bottom-right-radius: 30px;
+    border-top-right-radius: 30px;
+    background-color: #e88413;
+    border: none;
+  }
+
+  #btn-convert:hover {
+    background-color: #b56810;
+  }
+
+  #btn-convert:disabled {
+    cursor: not-allowed;
+  }
+
+  input.form-control,input.form-control:focus,#btn-convert {
+    border:none;
+    box-shadow: none;
+    outline-width: 0;
+   -webkit-box-shadow: none;
+   -moz-box-shadow: none;
+   -moz-transition: none;
+   -webkit-transition: none;
+  }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </head>
+  <body>
+
+    <div class="container mb-5">
+      <div class="row">
+        <div class="col-md-12 main-col">
+          <h2 class="mt-5">YouTube Grabber <i class="fab fa-youtube"></i></h2>
+          <div class="input-group input-group-lg">
+            <input id="urlInput" class="form-control" type="text" placeholder="Enter a url from YouTube" oninput="validateUrl()">
+            <div class="input-group-append">
+              <button class="btn btn-primary" id="btn-convert" type="button" onclick="fetchVideo()" disabled>Convert</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="error-modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5><i class="fas fa-frown"></i> Error</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true"><i class="fas fa-times"></i></span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Unfortunately an unknown error occured and your video could not be converted<br><br> Plase try again later</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <script type="text/javascript">
+    function validateUrl() {
+      let url = $('#urlInput').val();
+      if (url != undefined || url != '') {
+        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+        var match = url.match(regExp);
+        if (match && match[2].length == 11) {
+          $('#btn-convert').prop('disabled', false);
+        } else {
+          $('#btn-convert').prop('disabled', true);
+        }
+      }
+    }
+
+    function youtubeParser(url){
+      url = url.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+      return (url[2] !== undefined) ? url[2].split(/[^0-9a-z_\-]/i)[0] : url[0];
+    }
+
+    function fetchVideo() {
+      let url = `https://youtube.com/watch?v=${youtubeParser($('#urlInput').val())}`;
+      $.get(`http://localhost.glitch.me/info?url=${url}`, (data, err) => {
+        if (data == "error") return $('#error-modal').modal();
+        let thumbnail = `https://img.youtube.com/vi/${data.video_id}/maxresdefault.jpg`;
+        $('.main-col').after(`
+        <div class="col-md-6">
+          <div class="card mt-4">
+          <img src="${thumbnail}" class="card-img-top img-fluid">
+            <div class="card-body">
+              <h5 class="card-title">${data.title}</h5>
+              <p class="card-text">${data.description.substring(0, 100)}...</p>
+              <img src="${data.author.avatar}" class="img-responsive rounded" style="max-height: 30px; max-width: 30px;">&nbsp;
+              <a href="${data.author.channel_url}" class="text-dark" target="_blank">${data.author.name}</a>
+              <div class="mb-3"></div>
+              <a href="http://localhost.glitch.me/download?url=${url}&type=mp3" class="btn btn-primary btn-dl" download>MP3 <i class="fas fa-download"></i></a>
+              <a href="http://localhost.glitch.me/download?url=${url}&type=mp4" class="btn btn-primary btn-dl" download>MP4 <i class="fas fa-download"></i></a>
+            </div>
+          </div>
+        </div>
+        `);
+      });
+    }
+
+    $(document).ajaxStart(() => {
+      $('#btn-convert').prop('disabled', true);
+      $('#btn-convert').html("Converting&nbsp;")
+      $('#btn-convert').append(`<span class="spinner-border spinner-border-sm" role="status"></span>`);
+    });
+
+    $(document).ajaxComplete(() => {
+      $('#btn-convert').prop('disabled', false);
+      $('#btn-convert').html("Convert")
+      $('#btn-convert').remove('span');
+    });
+  </script>
+  </body>
+</html>
